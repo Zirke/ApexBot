@@ -1,7 +1,6 @@
 #!python3.6
 import re
 import asyncio
-from bs4 import BeautifulSoup
 import json
 import requests
 import discord
@@ -13,15 +12,11 @@ TOKEN = 'MzI1MjY5OTMwNDUyNzEzNDgy.D0r9VA.EyQTiWXoQJQ-yzt11tu0OxTPGCI'
 
 client = commands.Bot(command_prefix = '.')
 
-async def inf_from_tracker():
-	url = 'https://apex.tracker.gg/profile/pc/'+name
-	page = requests.get(url).content
-	soup = BeautifulSoup(page, "html.parser")
-	pattern = re.compile(r"var imp_careerStats = \[([^]]+)\]")
-	script = str(soup.find("script", text=pattern))
-	s = re.match(r"[^[]*\[([^]]*)\]", script).groups()[0]
-	s = "[" + s + "]"
-	return str(s)
+def inf_from_tracker(name):
+	url = 'https://public-api.tracker.gg/apex/v1/standard/profile/5/'+name
+	headers = {'TRN-Api-Key': '8b3b6e28-122f-4d9a-8c54-794fca417953'}
+	r = requests.get(url, headers=headers)
+	return r.text
 
 @client.event
 async def on_ready():
@@ -60,7 +55,7 @@ async def update(*args):
 	output = ""
 
 	try:
-		data = json.loads(inf_from_tracker())
+		data = json.loads(inf_from_tracker(name))
 	except ValueError:
 		print ("invalid json")
 	else:
@@ -68,23 +63,24 @@ async def update(*args):
 			if 'value' in data[i][stat]:
 				value.append(data[i][stat]['value'])
 			if 'legend' in data[i]:
-				legend = data[i]['legend']
-				if legend == 1:
-					legentlst.append("Wraith")
-				elif legend == 2:
-					legentlst.append("Bangalore")
-				elif legend == 3:
-					legentlst.append("Caustic")
-				elif legend == 4:
-					legentlst.append("Mirage")
-				elif legend == 5:
-					legentlst.append("Bloodhound")
-				elif legend == 6:
-					legentlst.append("Gibraltar")
-				elif legend == 7:
-					legentlst.append("Lifeline")
-				elif legend == 8:		
-					legentlst.append("Pathfinder")
+				if 'value' in data[i][stat]:
+					legend = data[i]['legend']
+					if legend == 1:
+						legentlst.append("Wraith")
+					elif legend == 2:
+						legentlst.append("Bangalore")
+					elif legend == 3:
+						legentlst.append("Caustic")
+					elif legend == 4:
+						legentlst.append("Mirage")
+					elif legend == 5:
+						legentlst.append("Bloodhound")
+					elif legend == 6:
+						legentlst.append("Gibraltar")
+					elif legend == 7:
+						legentlst.append("Lifeline")
+					elif legend == 8:        
+						legentlst.append("Pathfinder")
 	if len(args) is not 2: 
 		output = 'Could not understand, but '+name+' has '+str(value)+' kills! (Use syntax .update name kills/wins/damage)'
 	elif errorMsg is not None:
@@ -96,18 +92,12 @@ async def update(*args):
 		#output = name+' has got a total of : '+str(value)+ ' ' + statMsg + ' with ' + ' and '.join(legentlst)
 	await client.say(output)
 
-async def dritixWins():
-	value = 0
-	url = 'https://apex.tracker.gg/profile/pc/Dritix'
-	page = requests.get(url).content
-	soup = BeautifulSoup(page, "html.parser")
-	pattern = re.compile(r"var imp_careerStats = \[([^]]+)\]")
-	script = str(soup.find("script", text=pattern))
-	s = re.match(r"[^[]*\[([^]]*)\]", script).groups()[0]
-	s = "[" + s + "]"
 
+
+def broadcastWins(name):
+	value = 0
 	try:
-		data = json.loads(s)
+		data = json.loads(inf_from_tracker(name))
 	except ValueError:
 		print ("invalid json")
 	else:
@@ -116,5 +106,22 @@ async def dritixWins():
 				#if value < data[i]['kills']['value']:
 				value += data[i]['winsWithFullSquad']['value']
 	return int(value)
+
+async def background_task_wins(name):
+	wins = {}
+	newWins = {}
+	await client.wait_until_ready()
+	channel = discord.Object(id='325296935667761152')
+	wins[name] = broadcastWins(name)
+	while not client.is_closed:
+		newWins[name] = broadcastWins(name)
+		if newWins[name] > wins[name]:
+			output = name+' has just won '+str(newWins[name]-wins[name])+' game(s)!'
+			wins[name] = newWins[name]
+			await client.send_message(channel, output)
+		await asyncio.sleep(5)
+
+#for name in broadcastNames:
+	#client.loop.create_task(background_task_wins(name))
 
 client.run(TOKEN)
