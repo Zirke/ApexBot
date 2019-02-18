@@ -92,8 +92,6 @@ async def update(*args):
 		#output = name+' has got a total of : '+str(value)+ ' ' + statMsg + ' with ' + ' and '.join(legentlst)
 	await client.say(output)
 
-
-
 def broadcastWins(name):
 	value = 0
 	try:
