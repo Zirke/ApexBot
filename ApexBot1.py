@@ -1,5 +1,6 @@
 #!python3.6
 import re
+import asyncio
 from bs4 import BeautifulSoup
 import json
 import requests
@@ -14,6 +15,8 @@ client = commands.Bot(command_prefix = '.')
 async def on_ready():
     print('Bot online')
 
+   
+
 @client.command()
 async def update(*args):
     errorMsg = None
@@ -21,6 +24,8 @@ async def update(*args):
     if len(args) is not 2:
         for word in args:
             name = word
+        if not name:
+            name = 'Dritix'
         stat = 'kills'
     else:
         for word in args:
@@ -64,4 +69,39 @@ async def update(*args):
     else:
         output = name+' has got a total of: '+str(value)+' '+statMsg+'!'
     await client.say(output)
+
+def dritixWins():
+    value = 0
+    url = 'https://apex.tracker.gg/profile/pc/Dritix'
+    page = requests.get(url).content
+    soup = BeautifulSoup(page, "html.parser")
+    pattern = re.compile(r"var imp_careerStats = \[([^]]+)\]")
+    script = str(soup.find("script", text=pattern))
+    s = re.match(r"[^[]*\[([^]]*)\]", script).groups()[0]
+    s = "[" + s + "]"
+
+    try:
+        data = json.loads(s)
+    except ValueError:
+        print ("invalid json")
+    else:
+        for i in range(0, len(data)):
+            if 'value' in data[i]['winsWithFullSquad']:
+                #if value < data[i]['kills']['value']:
+                value += data[i]['winsWithFullSquad']['value']
+    return int(value)
+
+async def background_task():
+    await client.wait_until_ready()
+    channel = discord.Object(id='547065173517795368')
+    wins = dritixWins()
+    while not client.is_closed:
+        newWins = dritixWins()
+        if newWins > wins:
+            output = 'Dritix has just won '+str(newWins-wins)+' game(s)!'
+            wins = newWins
+            await client.send_message(channel, output)
+        await asyncio.sleep(5)
+
+client.loop.create_task(background_task())
 client.run(TOKEN)
