@@ -59,7 +59,8 @@ async def update(*args):
     if len(args) is not 2: 
         output = 'Could not understand, but '+name+' has '+str(value)+' kills! (Use syntax .update name kills/wins/damage)'
     elif errorMsg is not None:
-        await client.say(errorMsg)
+        
+        output = errorMsg + ', but '+name+' has '+str(value)+' kills! (Use syntax .update name kills/wins/damage)'
     else:
         output = name+' has got a total of: '+str(value)+' '+statMsg+'!'
     await client.say(output)
