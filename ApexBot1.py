@@ -9,6 +9,11 @@ TOKEN = 'MzI1MjY5OTMwNDUyNzEzNDgy.D0r9VA.EyQTiWXoQJQ-yzt11tu0OxTPGCI'
 
 client = commands.Bot(command_prefix='.')
 
+namelist = {}
+
+def serialize_namelist():
+    namelist = open('namelist.py', 'r')
+
 
 def inf_from_tracker(name):
     url = 'https://public-api.tracker.gg/apex/v1/standard/profile/5/' + name
@@ -21,11 +26,10 @@ def inf_from_tracker(name):
 @client.event
 async def on_ready():
     print('Bot online')
-
+    #serialize_namelist()
 
 def query_api(name, stat):
     value = 0
-    output = ''
     try:
         data = json.loads(inf_from_tracker(name))
     except ValueError:
@@ -35,8 +39,7 @@ def query_api(name, stat):
             if data['data']['children'][0]['stats'][i]['metadata']['key'] == stat:
                 print(data['data']['children'][0]['stats'][i]['metadata']['key'])
                 value = data['data']['children'][0]['stats'][i]['value']
-        output = name.capitalize() + ' has got a total of : ' + str(int(value)) + ' ' + stat.capitalize() + '!'
-    return output
+    return value
 
 
 @client.command()
@@ -48,7 +51,8 @@ async def kills(*args):
     else:
         for word in args:
             name = word
-    await client.say(query_api(name, stat))
+    output = name.capitalize() + ' has got a total of : ' + str(int(query_api(name, stat))) + ' ' + stat.capitalize() + '!'
+    await client.say(output)
 
 @client.command()
 async def damage(*args):
@@ -59,7 +63,9 @@ async def damage(*args):
     else:
         for word in args:
             name = word
-    await client.say(query_api(name, stat))
+    output = name.capitalize() + ' has got a total of : ' + str(
+        int(query_api(name, stat))) + ' ' + stat.capitalize() + '!'
+    await client.say(output)
 
 @client.command()
 async def wins(*args):
@@ -70,7 +76,9 @@ async def wins(*args):
     else:
         for word in args:
             name = word
-    await client.say(query_api(name, stat))
+    output = name.capitalize() + ' has got a total of : ' + str(
+        int(query_api(name, stat))) + ' ' + stat.capitalize() + '!'
+    await client.say(output)
 
 
 def broadcastWins(name):
@@ -87,18 +95,36 @@ def broadcastWins(name):
     return int(value)
 
 
-async def background_task_wins(name):
+@client.command()
+async def add(*args):
+    if len(args) is not 1:
+        await client.say('Syntax error, use syntax .add name')
+    else:
+        for word in args:
+            name = word.capitalize()
+            #print(name+'1st')
+        for names in namelist:
+            if names is name:
+                await client.say('Name already in list')
+            else:
+                namelist.append(name)
+                with open('namelist.py', 'r') as f:f.write(repr(namelist))
+                await client.say(name.capitalize()+' added to namelist.')
+                print('Added '+name)
+
+async def background_task_wins():
     wins = {}
     newWins = {}
     await client.wait_until_ready()
     channel = discord.Object(id='325296935667761152')
-    wins[name] = broadcastWins(name)
+
     while not client.is_closed:
-        newWins[name] = broadcastWins(name)
-        if newWins[name] > wins[name]:
-            output = name + ' has just won ' + str(newWins[name] - wins[name]) + ' game(s)!'
-            wins[name] = newWins[name]
-            await client.send_message(channel, output)
+        for name in namelist:
+            newWins[name] = broadcastWins(name)
+            if newWins[name] > wins[name]:
+                output = name + ' has just won ' + str(newWins[name] - wins[name]) + ' game(s)!'
+                wins[name] = newWins[name]
+                await client.send_message(channel, output)
         await asyncio.sleep(5)
 
 
