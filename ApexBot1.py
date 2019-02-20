@@ -1,6 +1,6 @@
 #!python3.6
 import asyncio
-import json
+import time
 import requests
 import discord
 from discord.ext import commands
@@ -30,7 +30,8 @@ def inf_from_tracker(name):
 async def on_ready():
     print('Bot online')
     deserialize_namelist()
-
+    client.loop.create_task(background_task_wins())
+    print('help')
 def query_api(name, stat):
     value = 0
     try:
@@ -99,7 +100,7 @@ async def add(*args):
             nametoadd = name
         if nametoadd:
             namelist[nametoadd.capitalize()] = 0
-            write_namelist()
+            #write_namelist()
             await client.say(nametoadd.capitalize() + ' added to namelist.')
             print('Added ' + nametoadd)
 
@@ -118,7 +119,7 @@ async def remove(*args):
     if nametoremove:
         nametoremove = nametoremove.capitalize()
         del namelist[nametoremove]
-        write_namelist()
+        #write_namelist()
         await client.say(nametoremove+' removed from namelist.')
 
 def broadcastWins(name):
@@ -144,12 +145,13 @@ async def background_task_wins():
             if newWins[name] > namelist[name]:
                 output = name + ' has just won ' + str(newWins[name] - namelist[name]) + ' game(s)!'
                 namelist[name] = newWins[name]
-                write_namelist()
                 await client.send_message(channel, output)
-                await asyncio.sleep(5)
+            await asyncio.sleep(5)
+        write_namelist()
+        await asyncio.sleep(5)
 
 
 
-client.loop.create_task(background_task_wins())
+
 
 client.run(TOKEN)
