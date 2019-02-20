@@ -100,7 +100,7 @@ async def add(*args):
             nametoadd = name
         if nametoadd:
             namelist[nametoadd.capitalize()] = 0
-            #write_namelist()
+            write_namelist()
             await client.say(nametoadd.capitalize() + ' added to namelist.')
             print('Added ' + nametoadd)
 
@@ -119,7 +119,7 @@ async def remove(*args):
     if nametoremove:
         nametoremove = nametoremove.capitalize()
         del namelist[nametoremove]
-        #write_namelist()
+        write_namelist()
         await client.say(nametoremove+' removed from namelist.')
 
 def broadcastWins(name):
@@ -140,7 +140,7 @@ async def background_task_wins():
     await client.wait_until_ready()
     channel = discord.Object(id='325296935667761152')
     while not client.is_closed:
-        for name in namelist:
+        for name in namelist.copy():
             newWins[name] = broadcastWins(name)
             if newWins[name] > namelist[name]:
                 output = name + ' has just won ' + str(newWins[name] - namelist[name]) + ' game(s)!'
@@ -149,9 +149,5 @@ async def background_task_wins():
             await asyncio.sleep(5)
         write_namelist()
         await asyncio.sleep(5)
-
-
-
-
 
 client.run(TOKEN)
