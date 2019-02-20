@@ -11,18 +11,21 @@ client = commands.Bot(command_prefix='.')
 
 namelist = {}
 
+
 def deserialize_namelist():
     global namelist
     namelist = eval(open('namelist.py', 'r').read())
 
+
 def write_namelist():
     with open('namelist.py', 'w') as f: f.write(repr(namelist))
+
 
 def inf_from_tracker(name):
     url = 'https://public-api.tracker.gg/apex/v1/standard/profile/5/' + name
     headers = {'TRN-Api-Key': '8b3b6e28-122f-4d9a-8c54-794fca417953'}
     r = requests.get(url, headers=headers)
-    #print(r.text)
+    # print(r.text)
     return r.json()
 
 
@@ -32,6 +35,8 @@ async def on_ready():
     deserialize_namelist()
     client.loop.create_task(background_task_wins())
     print('help')
+
+
 def query_api(name, stat):
     value = 0
     try:
@@ -39,10 +44,11 @@ def query_api(name, stat):
     except ValueError:
         print("Invalid json")
     else:
-        for i in range(0, len(data['data']['children'][0]['stats'])):
-            if data['data']['children'][0]['stats'][i]['metadata']['key'] == stat:
-                print(data['data']['children'][0]['stats'][i]['metadata']['key'])
-                value = data['data']['children'][0]['stats'][i]['value']
+        for j in range(0, len(data['data']['children'])):
+            for i in range(0, len(data['data']['children'][j]['stats'])):
+                if data['data']['children'][j]['stats'][i]['metadata']['key'] == stat:
+                    print(data['data']['children'][j]['stats'][i]['metadata']['key'])
+                    value += data['data']['children'][j]['stats'][i]['value']
     return value
 
 
@@ -55,8 +61,10 @@ async def kills(*args):
     else:
         for word in args:
             name = word
-    output = name.capitalize() + ' has got a total of : ' + str(int(query_api(name, stat))) + ' ' + stat.capitalize() + '!'
+    output = name.capitalize() + ' has got a total of : ' + str(
+        int(query_api(name, stat))) + ' ' + stat.capitalize() + '!'
     await client.say(output)
+
 
 @client.command()
 async def damage(*args):
@@ -71,6 +79,7 @@ async def damage(*args):
         int(query_api(name, stat))) + ' ' + stat.capitalize() + '!'
     await client.say(output)
 
+
 @client.command()
 async def wins(*args):
     stat = 'WinsWithFullSquad'
@@ -84,6 +93,7 @@ async def wins(*args):
         int(query_api(name, stat))) + ' ' + stat.capitalize() + '!'
     await client.say(output)
 
+
 @client.command()
 async def add(*args):
     nametoadd = None
@@ -92,7 +102,7 @@ async def add(*args):
     else:
         for word in args:
             name = word.capitalize()
-            #print(name+'1st')
+            # print(name+'1st')
 
         if name in namelist:
             await client.say('Name already in list')
@@ -103,6 +113,7 @@ async def add(*args):
             write_namelist()
             await client.say(nametoadd.capitalize() + ' added to namelist.')
             print('Added ' + nametoadd)
+
 
 @client.command()
 async def remove(*args):
@@ -115,12 +126,13 @@ async def remove(*args):
     if name in namelist:
         nametoremove = name
     else:
-        await client.say(name+' not in namelist.')
+        await client.say(name + ' not in namelist.')
     if nametoremove:
         nametoremove = nametoremove.capitalize()
         del namelist[nametoremove]
         write_namelist()
-        await client.say(nametoremove+' removed from namelist.')
+        await client.say(nametoremove + ' removed from namelist.')
+
 
 def broadcastWins(name):
     value = 0
@@ -134,6 +146,7 @@ def broadcastWins(name):
                 if data['data']['children'][j]['stats'][i]['metadata']['key'] == 'WinsWithFullSquad':
                     value += data['data']['children'][j]['stats'][i]['value']
     return int(value)
+
 
 async def background_task_wins():
     newWins = {}
@@ -149,5 +162,6 @@ async def background_task_wins():
             await asyncio.sleep(5)
         write_namelist()
         await asyncio.sleep(5)
+
 
 client.run(TOKEN)
