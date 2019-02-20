@@ -146,7 +146,7 @@ async def background_task_wins():
                 namelist[name] = newWins[name]
                 write_namelist()
                 await client.send_message(channel, output)
-        await asyncio.sleep(5)
+                await asyncio.sleep(5)
 
 
 
