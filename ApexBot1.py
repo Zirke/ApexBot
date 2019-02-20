@@ -12,7 +12,8 @@ client = commands.Bot(command_prefix='.')
 namelist = {}
 
 def serialize_namelist():
-    namelist = open('namelist.py', 'r')
+    global namelist
+    namelist = eval(open('namelist.py', 'r').read())
 
 
 def inf_from_tracker(name):
@@ -26,7 +27,7 @@ def inf_from_tracker(name):
 @client.event
 async def on_ready():
     print('Bot online')
-    #serialize_namelist()
+    serialize_namelist()
 
 def query_api(name, stat):
     value = 0
@@ -97,20 +98,41 @@ def broadcastWins(name):
 
 @client.command()
 async def add(*args):
+    nametoadd = None
     if len(args) is not 1:
         await client.say('Syntax error, use syntax .add name')
     else:
         for word in args:
             name = word.capitalize()
             #print(name+'1st')
-        for names in namelist:
-            if names is name:
-                await client.say('Name already in list')
-            else:
-                namelist.append(name)
-                with open('namelist.py', 'r') as f:f.write(repr(namelist))
-                await client.say(name.capitalize()+' added to namelist.')
-                print('Added '+name)
+
+        if name in namelist:
+            await client.say('Name already in list')
+        else:
+            nametoadd = name
+        if nametoadd:
+            namelist[nametoadd.capitalize()] = 0
+            with open('namelist.py', 'w') as f: f.write(repr(namelist))
+            await client.say(nametoadd.capitalize() + ' added to namelist.')
+            print('Added ' + nametoadd)
+
+@client.command()
+async def remove(*args):
+    nametoremove = None
+    if len(args) is not 1:
+        await client.say('Syntax error, use syntax .add name')
+    else:
+        for word in args:
+            name = word.capitalize()
+    if name in namelist:
+        nametoremove = name
+    else:
+        await client.say(name+' not in namelist.')
+    if nametoremove:
+        nametoremove = nametoremove.capitalize()
+        del namelist[nametoremove]
+        with open('namelist.py', 'w') as f: f.write(repr(namelist))
+        await client.say(nametoremove+' removed from namelist.')
 
 async def background_task_wins():
     wins = {}
