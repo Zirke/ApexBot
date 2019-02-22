@@ -7,7 +7,7 @@ class Stat:
         self.rank = rank
 
     def __repr__(self):
-        return self.legendName + "\nStat: " + self.statName + "\nValue: " + str(self.value) + "\nRank: " + str(self.rank) + "\n"
+        return "\n" + self.statName + "\nValue: " + str(self.value) + "\nRank: " + str(self.rank) + "\n"
 
     def getstatname(self):
         return self.statName

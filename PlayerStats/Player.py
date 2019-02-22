@@ -22,6 +22,7 @@ def json_from_tracker(name):
     return r.json()
 
 
+# Returns full json object from API
 def query_api_data(name):
     try:
         data = json_from_tracker(name)
@@ -32,6 +33,7 @@ def query_api_data(name):
     return data
 
 
+# Returns a list of all tracked legends (ID) from Player
 def query_legend_id(name):
     data = query_api_data(name)
     legendIdList = []
@@ -40,93 +42,64 @@ def query_legend_id(name):
     return legendIdList
 
 
-def query_legend_stats(data):
+# Returns a list of
+def query_legend_stats(data, legendname):
     children = []
     statlist = []
 
+    # Makes a list of all 'children' directories from Json object
     for x in data['data']['children']:
         children.append(x)
 
+    # Iterates through specified 'child' directory and creates Stat object from information
     for x in range(0, len(children[0]['stats'])):
-        for y in range(0, len(children[x]['stats'])):
-            legendname = children[x]['metadata']['legend_name']
-            statname = children[x]['stats'][y]['metadata']['key']
-            value = children[x]['stats'][y]['value']
-            rank = children[x]['stats'][y]['rank']
-            temp = Stat(legendname, statname, value, rank)
-            statlist.append(temp)
+        if children[x]['metadata']['legend_name'] == legendname:
+            for y in range(0, len(children[x]['stats'])):
+                statname = children[x]['stats'][y]['metadata']['key']
+                value = children[x]['stats'][y]['value']
+                rank = children[x]['stats'][y]['rank']
+                temp = Stat(legendname, statname, value, rank)
+                statlist.append(temp)
     return statlist
 
 
-def initialize_legends(legendIDs, statlist):
+def initialize_legends(inputIDs):
     legendlist = []
-    stats = []
-    for lid in legendIDs:
-        if lid == 'legend_1':
-            del stats[:]
-            for stat in statlist:
-                if stat.legendName == 'Wraith':
-                    stats.append(stat)
-            wraith = Legend("Wraith", stats)
+
+    for foo in inputIDs:
+        if foo == "legend_1":
+            wraith = Legend("Wraith", query_legend_stats(query_api_data("Obaius"), "Wraith"))
             legendlist.append(wraith)
-        elif lid == 'legend_2':
-            del stats[:]
-            for stat in statlist:
-                if stat.legendName == 'Bangalore':
-                    stats.append(stat)
-            bangalore = Legend("Bangalore", stats)
+        elif foo == "legend_2":
+            bangalore = Legend("Bangalore", query_legend_stats(query_api_data("Obaius"), "Bangalore"))
             legendlist.append(bangalore)
-        elif lid == 'legend_3':
-            del stats[:]
-            for stat in statlist:
-                if stat.legendName == 'Caustic':
-                    stats.append(stat)
-            caustic = Legend("Caustic", stats)
+        elif foo == "legend_3":
+            caustic = Legend("Caustic", query_legend_stats(query_api_data("Obaius"), "Caustic"))
             legendlist.append(caustic)
-        elif lid == 'legend_4':
-            del stats[:]
-            for stat in statlist:
-                if stat.legendName == 'Mirage':
-                    stats.append(stat)
-            mirage = Legend("Mirage", stats)
+        elif foo == "legend_4":
+            mirage = Legend("Mirage", query_legend_stats(query_api_data("Obaius"), "Mirage"))
             legendlist.append(mirage)
-        elif lid == 'legend_5':
-            del stats[:]
-            for stat in statlist:
-                if stat.legendName == 'Bloodhound':
-                    stats.append(stat)
-            bloodhound = Legend("Bloodhound", stats)
+        elif foo == "legend_5":
+            bloodhound = Legend("Bloodhound", query_legend_stats(query_api_data("Obaius"), "Bloodhound"))
             legendlist.append(bloodhound)
-        elif lid == 'legend_6':
-            del stats[:]
-            for stat in statlist:
-                if stat.legendName == 'Gibraltar':
-                    stats.append(stat)
-            gibraltar = Legend("Gibraltar", stats)
+        elif foo == "legend_6":
+            gibraltar = Legend("Gibraltar", query_legend_stats(query_api_data("Obaius"), "Gibraltar"))
             legendlist.append(gibraltar)
-        elif lid == 'legend_7':
-            del stats[:]
-            for stat in statlist:
-                if stat.legendName == 'Lifeline':
-                    stats.append(stat)
-            lifeline = Legend("Lifeline", stats)
+        elif foo == "legend_7":
+            lifeline = Legend("Lifeline", query_legend_stats(query_api_data("Obaius"), "Lifeline"))
             legendlist.append(lifeline)
-        elif lid == 'legend_8':
-            del stats[:]
-            for stat in statlist:
-                if stat.legendName == 'Pathfinder':
-                    stats.append(stat)
-            pathfinder = Legend("pathfinder", stats)
+        elif foo == "legend_8":
+            pathfinder = Legend("Pathfinder", query_legend_stats(query_api_data("Obaius"), "Pathfinder"))
             legendlist.append(pathfinder)
     return legendlist
 
 
 
-print(initialize_legends(query_legend_id('Dritix'), query_legend_stats(query_api_data('Dritix'))))
+#print(query_legend_id('Obaius'))
+#print(initialize_legends(query_legend_id('Obaius')))
 
-# print(json.dumps(query_api_data('Dritix'), indent=4))
+#print(json.dumps(query_api_data('Obaius'), indent=4))
 
+#print(query_legend_stats(query_api_data('Obaius'), "Lifeline"))
 
-#print(query_legend_stats(query_api_data('Dritix')))
-
-# print(initialize_legends(query_legend_id('Dritix')), query_legend_stats(query_api_data('Dritix')))
+print(initialize_legends(query_legend_id('Obaius')))
