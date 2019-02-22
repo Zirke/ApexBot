@@ -11,7 +11,6 @@ def inf_from_tracker(name):
     headers = {'TRN-Api-Key': '8b3b6e28-122f-4d9a-8c54-794fca417953'}
     # headers = {'TRN-Api-Key': '1c757697-3ea1-484e-ae03-14790cd3c356'}
     r = requests.get(url, headers=headers)
-    #print(r.text)
     return r.json()
 
 
