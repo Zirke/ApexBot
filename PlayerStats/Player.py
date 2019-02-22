@@ -92,10 +92,13 @@ def initialize_legends(inputIDs):
             legendlist.append(pathfinder)
     return legendlist
 
+def initialize_player(name):
+    
 
 
-#print(query_legend_id('TopZirke'))
-#print(initialize_legends(query_legend_id('TopZirke')))
-#print(json.dumps(query_api_data('TopZirke'), indent=4))
-#print(query_legend_stats(query_api_data("TopZirke"), "Caustic"))
-#print(initialize_legends(query_legend_id('TopZirke')))
+
+# print(query_legend_id('TopZirke'))
+# print(initialize_legends(query_legend_id('TopZirke')))
+# print(json.dumps(query_api_data('TopZirke'), indent=4))
+# print(query_legend_stats(query_api_data("TopZirke"), "Caustic"))
+# print(initialize_legends(query_legend_id('TopZirke')))
