@@ -1,6 +1,4 @@
 import requests
-import json
-from collections import namedtuple
 
 from PlayerStats.Legend import Legend
 from PlayerStats.Stat import Stat
@@ -52,7 +50,7 @@ def query_legend_stats(data, legendname):
         children.append(x)
 
     # Iterates through specified 'child' directory and creates Stat object from information
-    for x in range(0, len(children[0]['stats'])):
+    for x in range(0, len(children)):
         if children[x]['metadata']['legend_name'] == legendname:
             for y in range(0, len(children[x]['stats'])):
                 statname = children[x]['stats'][y]['metadata']['key']
@@ -69,38 +67,35 @@ def initialize_legends(inputIDs):
 
     for foo in inputIDs:
         if foo == "legend_1":
-            wraith = Legend("Wraith", query_legend_stats(query_api_data("Spawkz"), "Wraith"))
+            wraith = Legend("Wraith", query_legend_stats(query_api_data("TopZirke"), "Wraith"))
             legendlist.append(wraith)
         elif foo == "legend_2":
-            bangalore = Legend("Bangalore", query_legend_stats(query_api_data("Spawkz"), "Bangalore"))
+            bangalore = Legend("Bangalore", query_legend_stats(query_api_data("TopZirke"), "Bangalore"))
             legendlist.append(bangalore)
         elif foo == "legend_3":
-            caustic = Legend("Caustic", query_legend_stats(query_api_data("Spawkz"), "Caustic"))
+            caustic = Legend("Caustic", query_legend_stats(query_api_data("TopZirke"), "Caustic"))
             legendlist.append(caustic)
         elif foo == "legend_4":
-            mirage = Legend("Mirage", query_legend_stats(query_api_data("Spawkz"), "Mirage"))
+            mirage = Legend("Mirage", query_legend_stats(query_api_data("TopZirke"), "Mirage"))
             legendlist.append(mirage)
         elif foo == "legend_5":
-            bloodhound = Legend("Bloodhound", query_legend_stats(query_api_data("Spawkz"), "Bloodhound"))
+            bloodhound = Legend("Bloodhound", query_legend_stats(query_api_data("TopZirke"), "Bloodhound"))
             legendlist.append(bloodhound)
         elif foo == "legend_6":
-            gibraltar = Legend("Gibraltar", query_legend_stats(query_api_data("Spawkz"), "Gibraltar"))
+            gibraltar = Legend("Gibraltar", query_legend_stats(query_api_data("TopZirke"), "Gibraltar"))
             legendlist.append(gibraltar)
         elif foo == "legend_7":
-            lifeline = Legend("Lifeline", query_legend_stats(query_api_data("Spawkz"), "Lifeline"))
+            lifeline = Legend("Lifeline", query_legend_stats(query_api_data("TopZirke"), "Lifeline"))
             legendlist.append(lifeline)
         elif foo == "legend_8":
-            pathfinder = Legend("Pathfinder", query_legend_stats(query_api_data("Spawkz"), "Pathfinder"))
+            pathfinder = Legend("Pathfinder", query_legend_stats(query_api_data("TopZirke"), "Pathfinder"))
             legendlist.append(pathfinder)
     return legendlist
 
 
 
-#print(query_legend_id('Spawkz'))
-#print(initialize_legends(query_legend_id('Spawkz')))
-
-#print(json.dumps(query_api_data('Spawkz'), indent=4))
-
-#print(query_legend_stats(query_api_data("Spawkz"), "Caustic"))
-
-print(initialize_legends(query_legend_id('Spawkz')))
+#print(query_legend_id('TopZirke'))
+#print(initialize_legends(query_legend_id('TopZirke')))
+#print(json.dumps(query_api_data('TopZirke'), indent=4))
+#print(query_legend_stats(query_api_data("TopZirke"), "Caustic"))
+#print(initialize_legends(query_legend_id('TopZirke')))
