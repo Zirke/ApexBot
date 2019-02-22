@@ -8,4 +8,4 @@ class Legend:
 
     # Overwriting tostring
     def __repr__(self):
-        return "Legend name: " + self.legendName + " Stat: " + str(self.stats)
+        return "Legend name: " + self.legendName + "\nStats: " + str(self.stats) +"\n"

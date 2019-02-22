@@ -121,10 +121,12 @@ def initialize_legends(legendIDs, statlist):
     return legendlist
 
 
-print(initialize_legends(query_legend_id('Dritix'), query_legend_stats('Dritix')))
+
+print(initialize_legends(query_legend_id('Dritix'), query_legend_stats(query_api_data('Dritix'))))
 
 # print(json.dumps(query_api_data('Dritix'), indent=4))
 
-# print(query_legend_stats(query_api_data('Dritix')))
 
-#print(initialize_legends(query_legend_id('Dritix')), query_legend_stats(query_api_data('Dritix')))
+#print(query_legend_stats(query_api_data('Dritix')))
+
+# print(initialize_legends(query_legend_id('Dritix')), query_legend_stats(query_api_data('Dritix')))
