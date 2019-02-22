@@ -42,7 +42,7 @@ def query_legend_id(name):
     return legendIdList
 
 
-# Returns a list of
+# Returns the list of Stat objects for requested Legend
 def query_legend_stats(data, legendname):
     children = []
     statlist = []
@@ -58,6 +58,7 @@ def query_legend_stats(data, legendname):
                 statname = children[x]['stats'][y]['metadata']['key']
                 value = children[x]['stats'][y]['value']
                 rank = children[x]['stats'][y]['rank']
+
                 temp = Stat(legendname, statname, value, rank)
                 statlist.append(temp)
     return statlist
@@ -68,38 +69,38 @@ def initialize_legends(inputIDs):
 
     for foo in inputIDs:
         if foo == "legend_1":
-            wraith = Legend("Wraith", query_legend_stats(query_api_data("Obaius"), "Wraith"))
+            wraith = Legend("Wraith", query_legend_stats(query_api_data("Spawkz"), "Wraith"))
             legendlist.append(wraith)
         elif foo == "legend_2":
-            bangalore = Legend("Bangalore", query_legend_stats(query_api_data("Obaius"), "Bangalore"))
+            bangalore = Legend("Bangalore", query_legend_stats(query_api_data("Spawkz"), "Bangalore"))
             legendlist.append(bangalore)
         elif foo == "legend_3":
-            caustic = Legend("Caustic", query_legend_stats(query_api_data("Obaius"), "Caustic"))
+            caustic = Legend("Caustic", query_legend_stats(query_api_data("Spawkz"), "Caustic"))
             legendlist.append(caustic)
         elif foo == "legend_4":
-            mirage = Legend("Mirage", query_legend_stats(query_api_data("Obaius"), "Mirage"))
+            mirage = Legend("Mirage", query_legend_stats(query_api_data("Spawkz"), "Mirage"))
             legendlist.append(mirage)
         elif foo == "legend_5":
-            bloodhound = Legend("Bloodhound", query_legend_stats(query_api_data("Obaius"), "Bloodhound"))
+            bloodhound = Legend("Bloodhound", query_legend_stats(query_api_data("Spawkz"), "Bloodhound"))
             legendlist.append(bloodhound)
         elif foo == "legend_6":
-            gibraltar = Legend("Gibraltar", query_legend_stats(query_api_data("Obaius"), "Gibraltar"))
+            gibraltar = Legend("Gibraltar", query_legend_stats(query_api_data("Spawkz"), "Gibraltar"))
             legendlist.append(gibraltar)
         elif foo == "legend_7":
-            lifeline = Legend("Lifeline", query_legend_stats(query_api_data("Obaius"), "Lifeline"))
+            lifeline = Legend("Lifeline", query_legend_stats(query_api_data("Spawkz"), "Lifeline"))
             legendlist.append(lifeline)
         elif foo == "legend_8":
-            pathfinder = Legend("Pathfinder", query_legend_stats(query_api_data("Obaius"), "Pathfinder"))
+            pathfinder = Legend("Pathfinder", query_legend_stats(query_api_data("Spawkz"), "Pathfinder"))
             legendlist.append(pathfinder)
     return legendlist
 
 
 
-#print(query_legend_id('Obaius'))
-#print(initialize_legends(query_legend_id('Obaius')))
+#print(query_legend_id('Spawkz'))
+#print(initialize_legends(query_legend_id('Spawkz')))
 
-#print(json.dumps(query_api_data('Obaius'), indent=4))
+#print(json.dumps(query_api_data('Spawkz'), indent=4))
 
-#print(query_legend_stats(query_api_data('Obaius'), "Lifeline"))
+#print(query_legend_stats(query_api_data("Spawkz"), "Caustic"))
 
-print(initialize_legends(query_legend_id('Obaius')))
+print(initialize_legends(query_legend_id('Spawkz')))
