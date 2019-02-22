@@ -1,3 +1,5 @@
+from PlayerStats import Stat
+
 import requests
 
 from PlayerStats.Legend import Legend
@@ -91,8 +93,6 @@ def initialize_legends(inputIDs):
             pathfinder = Legend("Pathfinder", query_legend_stats(query_api_data("TopZirke"), "Pathfinder"))
             legendlist.append(pathfinder)
     return legendlist
-
-def initialize_player(name):
 
 
 

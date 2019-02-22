@@ -155,7 +155,7 @@ async def background_task_wins():
         for name in namelist.copy():
             newWins[name] = broadcastWins(name)
             if newWins[name] > namelist[name]:
-                output = name + ' has just won ' + str(newWins[name] - namelist[name]) + ' game(s)!'
+                output = name + ' has just won ' + str(newWins[name] - namelist[name]) + ' game(s) since last update!'
                 namelist[name] = newWins[name]
                 await client.send_message(channel, output)
             await asyncio.sleep(5)
