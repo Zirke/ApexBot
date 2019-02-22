@@ -93,7 +93,7 @@ def initialize_legends(inputIDs):
     return legendlist
 
 def initialize_player(name):
-    
+
 
 
 
